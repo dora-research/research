@@ -24,7 +24,7 @@ for offset in range(0,4000000,count):
 							""")
 	print(offset)
 	counter = 0
-
+	t0 = time.time()
 	for paper in paper_batch:
 		if paper['RId'] != None:
 			for RId in paper['RId']:
@@ -50,6 +50,9 @@ for offset in range(0,4000000,count):
 					UPDATE {} IN Paper
 				 """)
 				counter += 1
+				if counter == 1000:
+					t1 = time.time()
+					print(str(t1-t0))
 								
 		else:
 			pass

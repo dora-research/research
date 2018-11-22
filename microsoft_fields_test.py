@@ -107,8 +107,9 @@ def runAnalytics(G):
   # print([len(G.node),nx.density(major_cc),percent_GC,major_cc_connectivity_deg])
 
 
-  plt.figure()
-  nx.draw(G, node_size=5)
+  # plt.figure()
+  # nx.draw(G, node_size=5)
+  return G
 
 
 
@@ -124,6 +125,7 @@ def fieldInfo(id):
       '''.format(field['Id'], field['DFN'], field['FL'], field['CC']))
       return
 
+graphs = []
 
 id_to_data = {}
 for id in ids:
@@ -145,10 +147,18 @@ def main(offset):
       fieldInfo(key)
       G = buildGraph(id_to_data[key])
       runAnalytics(G)
+      graphs.append(G)
 
 main(0)
 
 
+index = 0
+# for g in graphs:
+#   plt.figure(index)
+#   index += 1
+plt.figure(1)
+nx.draw(graphs[0], node_size=5)
+plt.figure(2)
+nx.draw(graphs[1], node_size=5)
 
-# show graphs
 plt.show()

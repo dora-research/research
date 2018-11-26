@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# randomly select microsoft fields
 NUM_FIELDS = 10
+MAX_NODE_COUNT = 1000
+
+# randomly select microsoft fields
 fields = db.aql.execute('''
 FOR doc IN Field
   SORT RAND()
@@ -138,27 +140,22 @@ def main(offset):
       if id in id_to_data:
         id_to_data[id].append({ 'Id': doc['Id'], 'RId': doc['RId'] })
 
-  print(offset)
   # either continue querying or end and build graph for networkx
   if offset < total:
     main(offset + JUMP)
   else:
     for key in id_to_data:
-      fieldInfo(key)
-      G = buildGraph(id_to_data[key])
-      runAnalytics(G)
-      graphs.append(G)
+      if len(id_to_data[key]) < MAX_NODE_COUNT:
+        fieldInfo(key)
+        G = buildGraph(id_to_data[key])
+        runAnalytics(G)
+        graphs.append(G)
 
 main(0)
 
 
-index = 0
-# for g in graphs:
-#   plt.figure(index)
-#   index += 1
-plt.figure(1)
-nx.draw(graphs[0], node_size=5)
-plt.figure(2)
-nx.draw(graphs[1], node_size=5)
+for g in graphs:
+  plt.figure()
+  nx.draw(g, node_size=5)
 
 plt.show()
